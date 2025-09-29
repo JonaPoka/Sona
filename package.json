@@ -1,0 +1,14 @@
+{
+	"name": "sona-bot",
+	"version": "1.0.0",
+	"description": "A modular Discord bot",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js"
+	},
+	"author": "JonaPoka",
+	"license": "MIT",
+	"dependencies": {
+		"discord.js": "^14.14.1"
+	}
+}
