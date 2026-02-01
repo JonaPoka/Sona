@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField } = require('discord.js');
 const musicManager = require('../../musicManager');
 const ytdl = require('ytdl-core');
 
@@ -25,7 +25,7 @@ module.exports = {
 
 		// Check bot permissions
 		const permissions = voiceChannel.permissionsFor(interaction.client.user);
-		if (!permissions.has('Connect') || !permissions.has('Speak')) {
+		if (!permissions.has(PermissionsBitField.Flags.Connect) || !permissions.has(PermissionsBitField.Flags.Speak)) {
 			return interaction.editReply('❌ I need permissions to join and speak in your voice channel!');
 		}
 

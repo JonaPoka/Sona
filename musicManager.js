@@ -12,6 +12,7 @@ const ytsearch = require('yt-search');
 class MusicManager {
 	constructor() {
 		this.queues = new Map();
+		this.RECONNECT_TIMEOUT_MS = 5000;
 	}
 
 	getQueue(guildId) {
@@ -59,8 +60,8 @@ class MusicManager {
 				queue.connection.on(VoiceConnectionStatus.Disconnected, async () => {
 					try {
 						await Promise.race([
-							entersState(queue.connection, VoiceConnectionStatus.Signalling, 5_000),
-							entersState(queue.connection, VoiceConnectionStatus.Connecting, 5_000),
+							entersState(queue.connection, VoiceConnectionStatus.Signalling, this.RECONNECT_TIMEOUT_MS),
+							entersState(queue.connection, VoiceConnectionStatus.Connecting, this.RECONNECT_TIMEOUT_MS),
 						]);
 					} catch (error) {
 						queue.connection.destroy();
@@ -89,8 +90,12 @@ class MusicManager {
 			queue.player.play(resource);
 			queue.isPlaying = true;
 
+			// Remove existing listeners to prevent memory leaks
+			queue.player.removeAllListeners(AudioPlayerStatus.Idle);
+			queue.player.removeAllListeners('error');
+
 			// Handle player events
-			queue.player.once(AudioPlayerStatus.Idle, () => {
+			queue.player.on(AudioPlayerStatus.Idle, () => {
 				queue.songs.shift();
 				if (queue.songs.length > 0) {
 					this.play(guildId, voiceChannel, textChannel);
