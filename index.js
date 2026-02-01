@@ -4,7 +4,14 @@ const fs = require('fs');
 const path = require('path');
 const config = require('./config.json');
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+const client = new Client({ 
+	intents: [
+		GatewayIntentBits.Guilds, 
+		GatewayIntentBits.GuildMessages, 
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildVoiceStates
+	] 
+});
 client.commands = new Collection();
 
 
